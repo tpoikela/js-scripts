@@ -6,7 +6,7 @@ require('../lib/disclaimer')();
 const appendFileSync = require('fs').appendFileSync;
 const existsSync = require('fs').existsSync;
 
-const Script = require('../lib/js-scripts');
+const Script = require('../lib/script');
 const Template = require('../lib/template');
 
 const optDefs = [
