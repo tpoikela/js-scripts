@@ -1,48 +1,61 @@
 #! /usr/bin/env node
 /* eslint */
 
-const disclaimer = require('./lib/disclaimer')();
+require('../lib/disclaimer')();
 
-const readFileSync = require('fs').readFileSync;
 const appendFileSync = require('fs').appendFileSync;
 const existsSync = require('fs').existsSync;
 
-const commandLineArgs = require('command-line-args');
-const Template = require('./lib/template');
+const Script = require('../lib/js-scripts');
+const Template = require('../lib/template');
 
 const optDefs = [
-    {name: 'file', alias: 'f', type: String, multiple: true, default: true},
-    {name: 'out', alias: 'o', type: String},
-    {name: 'force', type: Boolean},
-    {name: 'json', type: String},
-    {name: 'vars', type: String}
+  { name: 'file', alias: 'f', type: String, multiple: true, defaultOption: true },
+  { name: 'out', alias: 'o', type: String },
+  { name: 'force', type: Boolean },
+  { name: 'json', type: String },
+  { name: 'vars', type: String }
 ];
 
-const opts = commandLineArgs(optDefs);
+const optDescr = {
 
-//if (opts.vars) {values = eval(opts.vars);}
-if (opts.vars) {
-    try {
-        eval(`var values = ${opts.vars};`);
-    }
-    catch (err) {
-        console.error(err.message);
-    }
 };
 
-opts.file.forEach(file => {
+const description = 'The script fills templates files.';
+const s = new Script({ optDefs, optDescr, description });
+
+s.addSection({ header: 'A test', content: 'Content test' });
+if (!s.opts.file) {
+  s.exitWithUsage('Specify input file with --file|-f!');
+}
+
+let values;
+
+s.run = function() {
+  if (s.opts.vars) {
+    try {
+      /* eslint no-eval: 0 */
+      eval(`values = ${s.opts.vars};`);
+    }
+    catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  s.opts.file.forEach(file => {
     const templFilled = Template.fillFile(file, values);
-    if (opts.out) {
-        if (!existsSync(opts.out)) {
-            appendFileSync(opts.out, templFilled);
-        }
-        else {
-            console.error(`File ${opts.out} exists. Refusing to overwrite.`);
-        }
+    if (s.opts.out) {
+      if (!existsSync(s.opts.out)) {
+        appendFileSync(s.opts.out, templFilled);
+      }
+      else {
+        console.error(`File ${s.opts.out} exists. Refusing to overwrite.`);
+      }
     }
     else {
-        console.log(templFilled);
+      console.log(templFilled);
     }
-});
+  });
+};
 
-//console.log(`Filled template:\n${templFilled}`);
+module.exports = s;
