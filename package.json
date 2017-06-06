@@ -1,0 +1,25 @@
+{
+  "name": "js-scripts",
+  "version": "0.0.1",
+  "description": "Repo for js utility scripts.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "npm run test"
+  },
+  "keywords": [
+    "scripts"
+  ],
+  "author": "Tuomas Poikela",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.3.0"
+  },
+  "dependencies": {
+    "command-line-args": "^4.0.6"
+  }
+}
